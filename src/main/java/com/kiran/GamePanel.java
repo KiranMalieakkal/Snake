@@ -30,7 +30,14 @@ public class GamePanel extends JPanel implements ActionListener {
    this.setBackground(Color.red);
    this.setFocusable(true);
    this.addKeyListener(new MyKeyAdapter());
+   x[0]= 1*UNIT_SIZE;
+   y[0]= 12*UNIT_SIZE;
+      for (int i = bodyParts; i > 0 ; i--) {
+         x[i] = x[0]-UNIT_SIZE; // initialising all x to one less than head
+         y[i] = y[0]; // initialising all y of the body to head so that it is all in same line
+      }
    startgame();
+
    }
 
    public void startgame(){
@@ -56,7 +63,7 @@ public class GamePanel extends JPanel implements ActionListener {
       g.setColor(Color.blue);
       g.fillOval(appleX,appleY,UNIT_SIZE,UNIT_SIZE);
 
-      for (int i = 0; i <= bodyParts ; i++) {
+      for (int i = 0; i < bodyParts ; i++) {
          if(i==0) {
             g.setColor(Color.BLACK);
             g.fillRect(x[i],y[i],UNIT_SIZE,UNIT_SIZE);
@@ -102,6 +109,16 @@ public class GamePanel extends JPanel implements ActionListener {
 
    }
    public void checkCollision(){
+      for(int i = 1; i< bodyParts;i++){
+         if(x[0] == x[i] && y[0]==y[i]) running =false; //checks if the snake has eaten itself
+      }
+      if((x[0] >= SCREEN_WIDTH) || (y[0] >= SCREEN_HEIGHT)|| (x[0] <= 0) || (y[0] <= 0)) {    // checks if the head reaches the boundary.
+         running = false;
+      }
+      if(!running){
+         timer.stop();
+      }
+
 
    }
    public void gameOver(Graphics g){
@@ -112,9 +129,10 @@ public class GamePanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
       if(running){
          move();
-//         for (int i = 0; i <= bodyParts; i++) {
+//         for (int i = 0; i < bodyParts; i++) {
 //            System.out.println(x[i]);   // for visualising the movement of the snake
 //         }
+         checkCollision();
       }
       repaint();// repaint will trigger the paintComponent to re render the painting
 
